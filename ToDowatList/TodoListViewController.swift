@@ -10,11 +10,15 @@ import UIKit
 
 class TodoListViewContoller: UITableViewController {
   // 11
-    let listArray = ["go home at 100:00PM","Sleep for 7 hours","Go to the Bank at 9:00AM to cash the check"]
+    var listArray = ["go home at 100:00PM","Sleep for 7 hours","Go to the Bank at 9:00AM to cash the check"]
+    let defualte = UserDefaults.standard
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        if let item = defualte.array(forKey: "added new item") as? [String] {
+            listArray = item
+        }
     }
 
     // MARK: - tableView dataSourse
@@ -44,7 +48,26 @@ class TodoListViewContoller: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
         
     }
+    // MARK: - ADD now item
     
-    
+    @IBAction func addNowItem(_ sender: UIBarButtonItem) {
+        
+        var textFiled = UITextField()
+        
+        let alert = UIAlertController(title: "Add new item", message: "", preferredStyle: .alert)
+        let action = UIAlertAction(title: "add", style: .default) { (action) in
+//            print("success")
+            self.listArray.append(textFiled.text!)
+            self.defualte.setValue(self.listArray, forKey: "added new item")
+            self.tableView.reloadData()
+            print(textFiled.text)
+        }
+        alert.addTextField { (alertTextfiled) in
+            alertTextfiled.placeholder = "creat new item"
+            textFiled = alertTextfiled
+        }
+        alert.addAction(action)
+        present(alert, animated: true, completion: nil)
+    }
 }
 
